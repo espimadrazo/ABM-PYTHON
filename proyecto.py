@@ -6,9 +6,6 @@ modelo_producto = {
     "Precio": None
 }
 
-"""
-FIXME ver lo del numerador (que cada producto tenga su número en la lista)
-"""
 
 while True:
     print("-- Sistema de Gestión Básica De Productos --")
@@ -18,29 +15,28 @@ while True:
     print("4. Eliminar producto")
     print("5. Salir")
 
-    opcion_menu= int(input("Ingrese el número de la opción que desea elegir:").strip())
+    opcion_menu= int(input("Ingrese el número de la opción que desea elegir: ").strip())
 
     match opcion_menu:
         case 1:
             while True:
                 nuevo_producto = modelo_producto.copy()
-                numerador = 0
 
-                nuevo_producto["Nombre"] = input("Ingrese el nombre del producto").strip().lower()
+                nuevo_producto["Nombre"] = input("Ingrese el nombre del producto: ").strip().lower()
                 if nuevo_producto["Nombre"] == "":
                     print("Ingrese un nombre válido")
                     continue
                 else:
                     print("Carga exitosa")
 
-                nuevo_producto["Categoría"] = input("Ingrese la categoría del producto").strip().lower()
+                nuevo_producto["Categoría"] = input("Ingrese la categoría del producto: ").strip().lower()
                 if nuevo_producto["Categoría"] == "":
                     print("Ingrese una categoría válida")
                     continue
                 else:
                     print("Carga exitosa")
 
-                nuevo_producto["Precio"] = input("Ingrese el precio del producto sin centavos").strip()
+                nuevo_producto["Precio"] = input("Ingrese el precio del producto sin centavos: ").strip()
                 if (nuevo_producto["Precio"].isdigit()):
                     nuevo_producto["Precio"] = int(nuevo_producto["Precio"])
                     if nuevo_producto["Precio"] <= 0:
@@ -52,7 +48,7 @@ while True:
 
                 productos.append(nuevo_producto)
 
-                carga_producto = input("¿Desea ingresar otro producto? S/N").strip().lower()
+                carga_producto = input("¿Desea ingresar otro producto? S/N: ").strip().lower()
                 if carga_producto == "s":
                     continue
 
@@ -70,19 +66,33 @@ while True:
                 print(index, x)
 
         case 3:
-            busqueda = input("Ingrese el nombre del producto que desea buscar").strip().lower()
+            busqueda = input("Ingrese el nombre del producto que desea buscar: ").strip().lower()
             if busqueda == "":
                 print("Ingrese un nombre válido")
                 continue
             else:
                 for producto in productos:
-                    if busqueda == producto{"Nombre"}
-                    print(producto)
+                    if busqueda == producto["Nombre"]:
+                        print(producto)
+                        break
                 else:
                     print("Producto no encontrado")
          
         case 4:
-            eliminar = input("Ingrese el número del producto que desea eliminar").strip()
+            print("Lista total de productos:")
+            for index, x in enumerate(productos, start=1):
+                print(index, x)
+            eliminar = input("Ingrese el número del producto que desea eliminar: ").strip()
+            if eliminar.isdigit():
+                eliminar = int(eliminar)
+                eliminar -= 1
+                productos.pop(eliminar)
+                print("Eliminación exitosa")
+                print(f"Lista actual de productos: ", productos)
+
+            else:
+                print("Ingrese una opción válida")
+                continue
 
         case 5:
             print("Gestión finalizada")
