@@ -1,3 +1,4 @@
+# Variables de almacenamiento
 productos = []
 
 modelo_producto = {
@@ -6,7 +7,10 @@ modelo_producto = {
     "Precio": None
 }
 
+template_lista = ("Nombre: {Nombre}, Categoría: {Categoría}, Precio: ${Precio}")
 
+
+# Menú
 while True:
     print("-- Sistema de Gestión Básica De Productos --")
     print("1. Agregar producto")
@@ -18,6 +22,8 @@ while True:
     opcion_menu= int(input("Ingrese el número de la opción que desea elegir: ").strip())
 
     match opcion_menu:
+
+        # Agregar producto
         case 1:
             while True:
                 nuevo_producto = modelo_producto.copy()
@@ -60,11 +66,14 @@ while True:
                     print("Ingrese una opción válida")
                     continue
 
+        # Mostrar productos
         case 2:
             print("Lista total de productos:")
-            for index, x in enumerate(productos, start=1):
-                print(index, x)
+            for index, producto in enumerate(productos, start=1):
+                productos_formato = template_lista.format(**producto)
+                print(index, productos_formato)
 
+        # Buscar producto
         case 3:
             busqueda = input("Ingrese el nombre del producto que desea buscar: ").strip().lower()
             if busqueda == "":
@@ -72,28 +81,31 @@ while True:
                 continue
             else:
                 for producto in productos:
+                    productos_formato = template_lista.format(**producto)
                     if busqueda == producto["Nombre"]:
-                        print(producto)
+                        print(productos_formato)
                         break
                 else:
                     print("Producto no encontrado")
-         
+
+        # Eliminar producto
         case 4:
             print("Lista total de productos:")
+            template_lista = ("Nombre: {Nombre}, Categoría: {Categoría}, Precio: ${Precio}")
             for index, x in enumerate(productos, start=1):
-                print(index, x)
+                productos_formato = template_lista.format(**x)
+                print(index, productos_formato)
             eliminar = input("Ingrese el número del producto que desea eliminar: ").strip()
             if eliminar.isdigit():
-                eliminar = int(eliminar)
-                eliminar -= 1
+                eliminar = int(eliminar) - 1
                 productos.pop(eliminar)
                 print("Eliminación exitosa")
-                print(f"Lista actual de productos: ", productos)
 
             else:
                 print("Ingrese una opción válida")
                 continue
 
+        # Salir
         case 5:
             print("Gestión finalizada")
             break
