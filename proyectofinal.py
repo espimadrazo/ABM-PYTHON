@@ -3,18 +3,11 @@ import functions
 import colorama
 
 # Conexión a base de datos
-connection = sqlite3.connect("productos.db")
-cursor = connection.cursor()
+conexion = sqlite3.connect("productos.db")
+cursor = conexion.cursor()
 
 # Creación de tabla en base de datos
-cursor.execute("""
-    CREATE TABLE IF NOT EXISTS productos (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        nombre TEXT NOT NULL,
-        categoría TEXT NOT NULL,
-        precio INTEGER NOT NULL
-    )
-""")
+functions.crear_base_de_datos()
 
 # Programa
 while True:
@@ -25,7 +18,7 @@ while True:
         match opcion_menu:
             # Agregar producto
             case 1:
-                producto = functions.agregar_producto()
+                functions.agregar_producto()
 
             # Mostrar productos
             case 2:
@@ -55,6 +48,9 @@ while True:
 
     except ValueError:
         print(colorama.Fore.RED + "Ingrese un número" + colorama.Style.RESET_ALL)
+
+    except Exception as error:
+        print(f"Ha ocurrido un error: {error}")
 
 
 
