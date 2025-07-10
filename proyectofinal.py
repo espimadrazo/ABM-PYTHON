@@ -30,16 +30,18 @@ while True:
 
             # Modificar precio producto
             case 4:
-                functions.mostrar_productos()
-                functions.modificar_precio()
+                functions.consultar_modificacion_datos()
+
+            case 5:
+                functions.filtrar_productos_por_cantidad()
 
             # Eliminar producto
-            case 5:
+            case 6:
                 functions.mostrar_productos()
                 functions.eliminar_producto()
 
             # Salir
-            case 6:
+            case 7:
                 functions.terminar_programa()
                 break
 
@@ -47,10 +49,11 @@ while True:
                 functions.imprimir_error_opcion()
 
     except ValueError:
-        print(colorama.Fore.RED + "Ingrese un número" + colorama.Style.RESET_ALL)
+        print(colorama.Fore.RED + "Ingrese un número de opción" + colorama.Style.RESET_ALL)
 
     except Exception as error:
         print(f"Ha ocurrido un error: {error}")
+
 
 
 
