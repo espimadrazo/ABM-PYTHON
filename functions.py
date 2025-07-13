@@ -2,11 +2,14 @@ import colorama
 import sqlite3
 
 # CONEXIÓN A BASE DE DATOS
-conexion = sqlite3.connect("productos.db")
-cursor = conexion.cursor()
+#conexion = sqlite3.connect("productos.db")
+#cursor = conexion.cursor()
 
 # CREAR TABLA EN BASE DE DATOS
 def crear_base_de_datos():
+    conexion = sqlite3.connect("productos.db")
+    cursor = conexion.cursor()
+    
     cursor.execute("""
         CREATE TABLE IF NOT EXISTS productos (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -103,10 +106,6 @@ def agregar_producto():
         print(f"Ha ocurrido un error: {error}")
         conexion.rollback()
 
-    except Exception as error:
-        conexion.rollback()
-        print(f"Ha ocurrido un error: {error}")
-
     finally:
         conexion.close()
 
@@ -147,7 +146,7 @@ def buscar_productos():
     finally:
         conexion.close()
 
-# MODIFICAR DATOS SUBMENÚ
+# MODIFICAR DATOS PRODUCTO
 def consultar_modificacion_datos():
     try:
         colorama.init()
@@ -156,6 +155,7 @@ def consultar_modificacion_datos():
 
         while True:
             mostrar_productos()
+
             id = int(input("Ingrese el número de ID del producto que desea actualizar: "))
             cursor.execute("SELECT EXISTS(SELECT 1 FROM productos WHERE id = ?)", (id,))
             consulta_id = cursor.fetchone()
@@ -171,75 +171,19 @@ def consultar_modificacion_datos():
                     dato_a_modificar = int(input("Ingrese el número de opción del dato que desea modificar: "))
                     match dato_a_modificar:
                         case 1:
-                            def modificar_nombre():
-                                nuevo_nombre = input("Ingrese el nuevo nombre del producto que desea actualizar: ").strip().lower()
-                                if nuevo_nombre == "":
-                                    print(colorama.Fore.RED + "Ingrese un nombre" + colorama.Style.RESET_ALL)
-                                else:
-                                    cursor.execute("BEGIN TRANSACTION")
-                                    cursor.execute("UPDATE productos SET nombre = ? WHERE id = ?", (nuevo_nombre, id))
-                                    print(colorama.Fore.GREEN + "Nombre modificado" + colorama.Style.RESET_ALL)
-
-                                conexion.commit()
-                            modificar_nombre()
+                            modificar_nombre(conexion, cursor, id)
 
                         case 2:
-                            def modificar_descripcion():
-                                nueva_descripcion = input("Ingrese la nueva descripción del producto que desea actualizar: ").strip().lower()
-                                if nueva_descripcion == "":
-                                    print(colorama.Fore.RED + "Ingrese una descripción" + colorama.Style.RESET_ALL)
-                                else:
-                                    cursor.execute("BEGIN TRANSACTION")
-                                    cursor.execute("UPDATE productos SET descripción = ? WHERE id = ?", (nueva_descripcion, id))
-                                    print(colorama.Fore.GREEN + "Descripción modificada" + colorama.Style.RESET_ALL)
-
-                                conexion.commit()
-                            modificar_descripcion()
-
+                            modificar_descripcion(conexion, cursor, id)
 
                         case 3:
-                            def modificar_categoria():
-                                nueva_categoria = input("Ingrese la nueva categoría del producto que desea actualizar: ").strip().lower()
-                                if nueva_categoria == "":
-                                    print(colorama.Fore.RED + "Ingrese una categoría" + colorama.Style.RESET_ALL)
-                                else:
-                                    cursor.execute("BEGIN TRANSACTION")
-                                    cursor.execute("UPDATE productos SET categoría = ? WHERE id = ?", (nueva_categoria, id))
-                                    print(colorama.Fore.GREEN + "Categoría modificado" + colorama.Style.RESET_ALL)
-
-                                conexion.commit()
-                            modificar_categoria()
+                            modificar_categoria(conexion, cursor, id)
 
                         case 4:
-                            def modificar_precio():
-                                nuevo_precio = input("Ingrese el nuevo precio del producto sin '$': ")
-                                nuevo_precio = float(nuevo_precio)
-                                if nuevo_precio <= 0:
-                                    print(colorama.Fore.RED + "El precio no puede ser 0 o negativo" + colorama.Style.RESET_ALL)
-                                else:
-                                    cursor.execute("BEGIN TRANSACTION")
-                                    cursor.execute("UPDATE productos SET precio = ? WHERE id = ?", (nuevo_precio, id))
-                                    print(colorama.Fore.GREEN + "Precio modificado" + colorama.Style.RESET_ALL)
-
-                                conexion.commit()
-                            modificar_precio()
+                            modificar_precio(conexion, cursor, id)
 
                         case 5:
-                            def modificar_cantidad():
-                                nueva_cantidad = (input("Ingrese la nueva cantidad del producto que desea actualizar: "))
-                                if nueva_cantidad.isdigit():
-                                    nueva_cantidad = int(nueva_cantidad)
-                                    if nueva_cantidad <= 0:
-                                        print(colorama.Fore.RED + "La cantidad no puede ser 0 o menor que 0" + colorama.Style.RESET_ALL)
-                                    else:
-                                        cursor.execute("BEGIN TRANSACTION")
-                                        cursor.execute("UPDATE productos SET cantidad = ? WHERE id = ?", (nueva_cantidad, id))
-                                        print(colorama.Fore.GREEN + "Cantidad modificada" + colorama.Style.RESET_ALL)
-                                else:
-                                    print(colorama.Fore.RED + "Ingrese un valor válido" + colorama.Style.RESET_ALL)
-
-                                conexion.commit()
-                            modificar_cantidad()
+                            modificar_cantidad(conexion, cursor, id)
 
                         case 6:
                             terminar_programa()
@@ -250,7 +194,7 @@ def consultar_modificacion_datos():
             else:
                 print("ID de producto no encontrada")
 
-            pregunta = input("¿Desea modificar producto? S/N").strip().lower()
+            pregunta = input("¿Desea modificar otro producto? S/N").strip().lower()
             if pregunta == "s":
                 continue
             elif pregunta == "n":
@@ -265,85 +209,89 @@ def consultar_modificacion_datos():
         print(f"Ha ocurrido un error: {error}")
         conexion.rollback()
 
-    except Exception as error:
-        conexion.rollback()
-        print(f"Ha ocurrido un error: {error}")
-
     finally:
         conexion.close()
 
+# MODIFICAR NOMBRE SUBMENÚ
+def modificar_nombre(conexion, cursor, id):
+    nuevo_nombre = input("Ingrese el nuevo nombre del producto que desea actualizar: ").strip().lower()
+    if nuevo_nombre == "":
+        print(colorama.Fore.RED + "Ingrese un nombre" + colorama.Style.RESET_ALL)
+    else:
+        cursor.execute("BEGIN TRANSACTION")
+        cursor.execute("UPDATE productos SET nombre = ? WHERE id = ?", (nuevo_nombre, id))
+        print(colorama.Fore.GREEN + "Nombre modificado" + colorama.Style.RESET_ALL)
 
+    conexion.commit()
 
-"""
-# MODIFICAR PRECIO
-def modificar_precio():
-    mostrar_productos()
+# MODIFICAR DESCRIPCIÓN SUBMENÚ
+def modificar_descripcion(conexion, cursor, id):
+    nueva_descripcion = input("Ingrese la nueva descripción del producto que desea actualizar: ").strip().lower()
+    if nueva_descripcion == "":
+        print(colorama.Fore.RED + "Ingrese una descripción" + colorama.Style.RESET_ALL)
+    else:
+        cursor.execute("BEGIN TRANSACTION")
+        cursor.execute("UPDATE productos SET descripción = ? WHERE id = ?", (nueva_descripcion, id))
+        print(colorama.Fore.GREEN + "Descripción modificada" + colorama.Style.RESET_ALL)
 
-    try:
-        colorama.init()
-        conexion = sqlite3.connect("productos.db")
-        cursor = conexion.cursor()
+    conexion.commit()
 
-        while True:
-            id = int(input("Ingrese el número de ID del producto que desea actualizar: "))
-            cursor.execute("SELECT EXISTS(SELECT 1 FROM productos WHERE id = ?)", (id,))
-            consulta_id = cursor.fetchone()
+# MODIFICAR CATEGORÍA SUBMENÚ
+def modificar_categoria(conexion, cursor, id):
+    nueva_categoria = input("Ingrese la nueva categoría del producto que desea actualizar: ").strip().lower()
+    if nueva_categoria == "":
+        print(colorama.Fore.RED + "Ingrese una categoría" + colorama.Style.RESET_ALL)
+    else:
+        cursor.execute("BEGIN TRANSACTION")
+        cursor.execute("UPDATE productos SET categoría = ? WHERE id = ?", (nueva_categoria, id))
+        print(colorama.Fore.GREEN + "Categoría modificado" + colorama.Style.RESET_ALL)
 
-            if consulta_id[0] == 1:
-                nuevo_precio = input("Ingrese el nuevo precio del producto sin '$': ")
-                nuevo_precio = float(nuevo_precio)
-                if nuevo_precio <= 0:
-                    print(colorama.Fore.RED + "El precio no puede ser 0 o negativo" + colorama.Style.RESET_ALL)
-                else:
-                    cursor.execute("BEGIN TRANSACTION")
-                    cursor.execute("UPDATE productos SET precio = ? WHERE id = ?", (nuevo_precio, id))
-                    print(colorama.Fore.GREEN + "Carga exitosa" + colorama.Style.RESET_ALL)
-            else:
-                print("ID de producto no encontrada")
+    conexion.commit()
 
-            conexion.commit()
+# MODIFICAR PRECIO SUBMENÚ
+def modificar_precio(conexion, cursor, id):
+    nuevo_precio = input("Ingrese el nuevo precio del producto sin '$': ")
+    nuevo_precio = float(nuevo_precio)
+    if nuevo_precio <= 0:
+        print(colorama.Fore.RED + "El precio no puede ser 0 o negativo" + colorama.Style.RESET_ALL)
+    else:
+        cursor.execute("BEGIN TRANSACTION")
+        cursor.execute("UPDATE productos SET precio = ? WHERE id = ?", (nuevo_precio, id))
+        print(colorama.Fore.GREEN + "Precio modificado" + colorama.Style.RESET_ALL)
 
-            pregunta = input("¿Desea modificar el precio de otro producto? S/N").strip().lower()
-            if pregunta == "s":
-                continue
-            elif pregunta == "n":
-                break
-            else:
-                print("Ingrese una opción válida")
+    conexion.commit()
 
-    except ValueError:
+# MODIFICAR CANTIDAD SUBMENÚ
+def modificar_cantidad(conexion, cursor, id):
+    nueva_cantidad = (input("Ingrese la nueva cantidad del producto que desea actualizar: "))
+    if nueva_cantidad.isdigit():
+        nueva_cantidad = int(nueva_cantidad)
+        if nueva_cantidad <= 0:
+            print(colorama.Fore.RED + "La cantidad no puede ser 0 o menor que 0" + colorama.Style.RESET_ALL)
+        else:
+            cursor.execute("BEGIN TRANSACTION")
+            cursor.execute("UPDATE productos SET cantidad = ? WHERE id = ?", (nueva_cantidad, id))
+            print(colorama.Fore.GREEN + "Cantidad modificada" + colorama.Style.RESET_ALL)
+    else:
         print(colorama.Fore.RED + "Ingrese un valor válido" + colorama.Style.RESET_ALL)
 
-    except IndexError:
-        print(colorama.Fore.RED + "Ingrese un número válido de índice" + colorama.Style.RESET_ALL)
+    conexion.commit()
 
-    except sqlite3.Error as error:
-        print(f"Ha ocurrido un error: {error}")
-        conexion.rollback()
-
-    except Exception as error:
-        conexion.rollback()
-        print(f"Ha ocurrido un error: {error}")
-
-    finally:
-        conexion.close()
-"""
-
-# BUSCAR PRODUCTO STOCK
+# FILTRAR PRODUCTOS POR STOCK
 def filtrar_productos_por_cantidad():
     try:
         colorama.init()
         conexion = sqlite3.connect("productos.db")
         cursor = conexion.cursor()
 
-        cursor.execute("SELECT * FROM productos")
+        cantidad_producto = int(input("Ingrese el número de stock que desea consultar. La búsqueda devolverá todos los productos en stock con esa cantidad de unidades o menos: "))
+
+        cursor.execute("SELECT * FROM productos WHERE cantidad <= ?", (cantidad_producto,))
         lista_productos = cursor.fetchall()
 
-        cantidad_producto = int(input("Ingrese el número de stock que desea consultar. La búsqueda devolverá todos los productos en stock con esa cantidad de unidades o menos: "))
-        print("Productos:")
+        print("Consulta de stock:")
         for producto in lista_productos:
-            if producto[5] <= cantidad_producto:
-                print(f"ID: {producto[0]}, Nombre: {producto[1]}, Descripción: {producto[2]}, Categoría: {producto[3]}, Precio: {producto[4]}, Cantidad: {producto[5]}")
+            print(f"ID: {producto[0]}, Nombre: {producto[1]}, Descripción: {producto[2]}, Categoría: {producto[3]}, Precio: {producto[4]}, Cantidad: {producto[5]}")
 
     except ValueError:
         print(colorama.Fore.RED + "Ingrese un valor válido" + colorama.Style.RESET_ALL)
@@ -351,10 +299,6 @@ def filtrar_productos_por_cantidad():
     except sqlite3.Error as error:
         print(f"Ha ocurrido un error: {error}")
         conexion.rollback()
-
-    except Exception as error:
-        conexion.rollback()
-        print(f"Ha ocurrido un error: {error}")
 
     finally:
         conexion.close()
@@ -367,6 +311,8 @@ def eliminar_producto():
         cursor = conexion.cursor()
 
         while True:
+            mostrar_productos()
+
             id = int(input("Ingrese el número de ID del producto que desea eliminar: "))
             cursor.execute("SELECT EXISTS(SELECT 1 FROM productos WHERE id = ?)", (id,))
             consulta_id = cursor.fetchone()
@@ -398,10 +344,6 @@ def eliminar_producto():
     except sqlite3.Error as error:
         print(f"Ha ocurrido un error: {error}")
         conexion.rollback()
-
-    except Exception as error:
-        conexion.rollback()
-        print(f"Ha ocurrido un error: {error}")
 
     finally:
         conexion.close()

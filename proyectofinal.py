@@ -2,10 +2,6 @@ import sqlite3
 import functions
 import colorama
 
-# Conexión a base de datos
-conexion = sqlite3.connect("productos.db")
-cursor = conexion.cursor()
-
 # Creación de tabla en base de datos
 functions.crear_base_de_datos()
 
@@ -20,7 +16,7 @@ while True:
             case 1:
                 functions.agregar_producto()
 
-            # Mostrar productos
+            # Mostrar total de productos
             case 2:
                 functions.mostrar_productos()
 
@@ -28,16 +24,16 @@ while True:
             case 3:
                 functions.buscar_productos()
 
-            # Modificar precio producto
+            # Modificar datos de producto
             case 4:
                 functions.consultar_modificacion_datos()
 
+            # Filtrar productos por cantidad
             case 5:
                 functions.filtrar_productos_por_cantidad()
 
             # Eliminar producto
             case 6:
-                functions.mostrar_productos()
                 functions.eliminar_producto()
 
             # Salir
